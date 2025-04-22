@@ -69,7 +69,7 @@ const TaskItem = ({
             type="text"
             value={task.url.replace(/^https:\/\//, "")}
             onChange={(e) => {
-              onChange({ ...task, url: "https://" + e.target.value });
+              onChange({ ...task, url: "https://" + e.target.value.replace(/^https:\/\//, "")});
             }}
             title="set URL"
             disabled={lock}
