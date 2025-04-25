@@ -1,10 +1,11 @@
 import { useReducer, useState } from "react";
 import "./App.css";
-import { Col, Container, Navbar, Row } from "react-bootstrap";
+import { Col, Container, Nav, Navbar, Row } from "react-bootstrap";
 import TaskList from "./components/TaskList";
 import { ITaskItem, ITaskItemStatus } from "./components/TaskItem";
-import { WindowFullscreen } from "react-bootstrap-icons";
+import { BoxArrowUpRight } from "react-bootstrap-icons";
 import { ScreenshotCapture } from "simple-website-screenshot-tool";
+import { Badge } from "react-bootstrap";
 
 function App() {
   const defaultTask: Omit<ITaskItem, "uid"> = {
@@ -84,7 +85,7 @@ function App() {
           type: "update",
           index: taskIndex,
           value: { ...taskItem, status: ITaskItemStatus.PENDING },
-        })
+        });
       }
 
       for (let [taskIndex, taskItem] of tasks.entries()) {
@@ -128,36 +129,82 @@ function App() {
   };
 
   return (
-    <Container fluid="sm" className="mx-auto">
-      <Row>
-        <Col>
-          <Navbar expand="lg" className="bg-body-tertiary">
-            <Container>
-              <Navbar.Brand href="#">
-                <WindowFullscreen className="me-2" size="36"></WindowFullscreen>
-                Simple Bulk Webpage Screenshooter (v 0.0.1)
-              </Navbar.Brand>
-            </Container>
-          </Navbar>
-        </Col>
-      </Row>
-      <Row>
-        <Col xs={12}>
-          <TaskList
-            tasks={tasks.map((item, index) => {
-              return { ...item, uid: index + 1 };
-            })}
-            lock={lock}
-            onChange={onChangeHandler}
-            onCreate={onCreateHandler}
-            onDelete={onDeleteHandler}
-            onProceed={onProceedHandler}
-            onReset={onResetHandler}
-            onCancel={onCancel}
-          ></TaskList>
-        </Col>
-      </Row>
-    </Container>
+    <>
+      <Navbar bg="dark" className="bg-body-tertiary">
+        <Container>
+          <Navbar.Brand href="#">
+            Simple Bulk Webpage Screenshooter
+          </Navbar.Brand>
+          <Navbar.Toggle />
+          <Navbar.Collapse className="justify-content-end">
+            <Navbar.Text>
+              <Nav.Link href="https://github.com/olegbarabanov/simple-bulk-webpage-screenshooter">
+                Github <BoxArrowUpRight></BoxArrowUpRight>
+              </Nav.Link>
+            </Navbar.Text>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+
+      <section className="mt-5">
+        <Container>
+          <Row className="justify-content-center">
+            <Col className="col-xl-8 col-lg-10">
+              <h1 className="h1 text-center">
+                Simple Bulk Webpage Screenshooter
+              </h1>
+              <p className="text-center">
+                <Badge bg="warning" text="dark">
+                  v 0.0.1
+                </Badge>
+              </p>
+              <p className="mt-5 text-center">
+                A web application for creating multiple screenshots of web pages
+                with different parameters.{" "}
+                <span className="text-black fw-bolder">
+                  No servers. No third-party services.
+                </span>{" "}
+                A modern browser is enough to create screenshots of web pages.
+              </p>
+            </Col>
+          </Row>
+        </Container>
+      </section>
+
+      <section className="mt-5">
+        <Container>
+          <Row>
+            <Col xs={12}>
+              <TaskList
+                tasks={tasks.map((item, index) => {
+                  return { ...item, uid: index + 1 };
+                })}
+                lock={lock}
+                onChange={onChangeHandler}
+                onCreate={onCreateHandler}
+                onDelete={onDeleteHandler}
+                onProceed={onProceedHandler}
+                onReset={onResetHandler}
+                onCancel={onCancel}
+              ></TaskList>
+            </Col>
+          </Row>
+        </Container>
+      </section>
+
+      <section className="mt-5">
+        <Container>
+          <Row className="justify-content-center">
+            <Col className="col-xl-8 col-lg-10">
+              <p className="text-center">
+                2025 © Simple Bulk Webpage Screenshooter by{" "}
+                <a href="https://olegbarabanov.ru">olegbarabanov</a>
+              </p>
+            </Col>
+          </Row>
+        </Container>
+      </section>
+    </>
   );
 }
 
