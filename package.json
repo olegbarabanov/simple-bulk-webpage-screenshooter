@@ -17,7 +17,7 @@
     "react-bootstrap": "^2.10.9",
     "react-bootstrap-icons": "^1.11.5",
     "react-dom": "^19.0.0",
-    "simple-website-screenshot-tool": "^0.0.1"
+    "simple-website-screenshot-tool": "^0.1.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",

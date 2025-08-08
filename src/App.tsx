@@ -1,4 +1,4 @@
-import { useReducer, useState } from "react";
+import { useReducer, useRef, useState } from "react";
 import "./App.css";
 import { Col, Container, Nav, Navbar, Row } from "react-bootstrap";
 import TaskList from "./components/TaskList";
@@ -17,7 +17,7 @@ function App() {
   };
 
   const [lock, setLock] = useState(false);
-  let cancel = false;
+  const abortController = useRef(new AbortController());
 
   const reducer = (
     state: Array<Omit<ITaskItem, "uid">>,
@@ -66,9 +66,7 @@ function App() {
     dispatchTasks({ type: "delete", index: deletedTask.uid });
   };
 
-  const onCancel = () => {
-    cancel = true;
-  };
+  const onCancel = () => abortController.current.abort();
 
   const onProceedHandler = async () => {
     setLock(true);
@@ -78,7 +76,13 @@ function App() {
         chunkHeight: 300,
       });
 
-      const capturer = capture.getScreenshots(tasks);
+      abortController.current = new AbortController();
+      const capturer = capture.getScreenshots(
+        tasks.map((task) => ({
+          signal: abortController.current.signal,
+          ...task,
+        }))
+      );
 
       for (let [taskIndex, taskItem] of tasks.entries()) {
         dispatchTasks({
@@ -89,11 +93,7 @@ function App() {
       }
 
       for (let [taskIndex, taskItem] of tasks.entries()) {
-        if (cancel) {
-          setLock(false);
-          cancel = false;
-          break;
-        }
+        if (abortController.current.signal.aborted) break;
 
         dispatchTasks({
           type: "update",
@@ -109,17 +109,24 @@ function App() {
             value: { ...taskItem, status: ITaskItemStatus.DONE, blob: value },
           });
         } catch (e) {
+          if (e instanceof DOMException && e.name === "AbortError") {
+            dispatchTasks({
+              type: "update",
+              index: taskIndex,
+              value: { ...taskItem, status: ITaskItemStatus.PENDING },
+            });
+          } else {
           dispatchTasks({
             type: "update",
             index: taskIndex,
             value: { ...taskItem, status: ITaskItemStatus.ERROR },
           });
+          }
         }
       }
       capturer.return();
     } finally {
       setLock(false);
-      cancel = false;
     }
   };
 
