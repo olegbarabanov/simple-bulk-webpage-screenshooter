@@ -6,6 +6,7 @@ import { ITaskItem, ITaskItemStatus } from "./components/TaskItem";
 import { BoxArrowUpRight } from "react-bootstrap-icons";
 import { ScreenshotCapture } from "simple-website-screenshot-tool";
 import { Badge } from "react-bootstrap";
+import { version as appVersion } from "../package.json";
 
 function App() {
   const defaultTask: Omit<ITaskItem, "uid"> = {
@@ -116,11 +117,11 @@ function App() {
               value: { ...taskItem, status: ITaskItemStatus.PENDING },
             });
           } else {
-          dispatchTasks({
-            type: "update",
-            index: taskIndex,
-            value: { ...taskItem, status: ITaskItemStatus.ERROR },
-          });
+            dispatchTasks({
+              type: "update",
+              index: taskIndex,
+              value: { ...taskItem, status: ITaskItemStatus.ERROR },
+            });
           }
         }
       }
@@ -162,7 +163,7 @@ function App() {
               </h1>
               <p className="text-center">
                 <Badge bg="warning" text="dark">
-                  v 0.0.1
+                  v {appVersion}
                 </Badge>
               </p>
               <p className="mt-5 text-center">
